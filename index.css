@@ -1,0 +1,254 @@
+:root{
+  --bg-0:#0a0e17;
+  --bg-1:#0f1524;
+  --panel:#131a2b;
+  --panel-line:#232c42;
+  --gold:#f4c542;
+  --gold-dim:#a3852f;
+  --ember:#ff5e3a;
+  --ice:#4fd1e8;
+  --text-hi:#f2f4fa;
+  --text-lo:#8b93ab;
+  --ring-track:#1a2236;
+  --gap-glow:#ff5e3a;
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1a2440 0%, transparent 60%),
+    var(--bg-0);
+  color:var(--text-hi);
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  overflow:hidden;
+}
+
+.stage{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ---------- BANNER ---------- */
+.banner{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:10px 18px 10px;
+  background:
+    radial-gradient(120% 200% at 50% 0%, rgba(244,197,66,.06) 0%, transparent 55%),
+    linear-gradient(180deg,var(--panel) 0%, #0d1322 100%);
+  border-bottom:1px solid var(--panel-line);
+  box-shadow:0 8px 28px rgba(0,0,0,.4);
+  position:relative;
+  z-index:5;
+  flex-shrink:0;
+}
+
+.banner::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold-dim), var(--ember), var(--gold-dim), transparent);
+  opacity:.6;
+}
+
+.banner__top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.banner__side{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:80px;
+  padding:4px 10px;
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,0) 100%);
+  border:1px solid var(--panel-line);
+}
+
+.banner__side--left{ align-items:flex-start; }
+.banner__side--right{ align-items:flex-end; }
+
+.banner__label{
+  font-size:10px;
+  letter-spacing:.06em;
+  color:var(--text-lo);
+  text-transform:uppercase;
+}
+
+.banner__value{
+  font-size:20px;
+  font-weight:700;
+  color:var(--ice);
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 12px rgba(79,209,232,.35);
+}
+
+.banner__center{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+}
+
+.banner__title{
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:.16em;
+  background:linear-gradient(90deg, var(--gold-dim), var(--gold) 50%, var(--gold-dim));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 0 18px rgba(244,197,66,.25);
+}
+
+.banner__round{
+  font-size:12px;
+  font-weight:600;
+  color:var(--text-lo);
+  letter-spacing:.04em;
+}
+
+.banner__winner{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:4px 16px;
+  border-radius:999px;
+  background:radial-gradient(120% 120% at 50% 0%, #1c2438 0%, #10162655 100%);
+  border:1px solid var(--panel-line);
+  min-height:32px;
+  transition:border-color .3s ease, box-shadow .3s ease;
+}
+
+.banner__winner.is-champion{
+  border-color:var(--gold);
+  box-shadow:0 0 0 1px var(--gold-dim), 0 0 24px rgba(244,197,66,.35);
+}
+
+.banner__winner-flag{
+  font-size:24px;
+  line-height:1;
+}
+
+.banner__winner-name{
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-hi);
+}
+
+.banner__winner.is-champion .banner__winner-name{
+  color:var(--gold);
+}
+
+.banner__status{
+  text-align:center;
+  font-size:12px;
+  color:var(--text-lo);
+  padding:4px 14px;
+  border-radius:8px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--panel-line);
+}
+
+#statusText.pulse{
+  color:var(--ember);
+  animation:pulse 1s ease-in-out infinite;
+}
+
+/* LEADERBOARD */
+.leaderboard{
+  margin-top:4px;
+  padding:4px 10px;
+  background:rgba(0,0,0,0.35);
+  border-radius:8px;
+  border:1px solid var(--panel-line);
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.leaderboard__header{
+  display:grid;
+  grid-template-columns:28px 1fr 44px;
+  font-size:10px;
+  color:var(--text-lo);
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  padding-bottom:3px;
+  border-bottom:1px solid var(--panel-line);
+}
+.leaderboard__row{
+  display:grid;
+  grid-template-columns:28px 1fr 44px;
+  font-size:13px;
+  padding:2px 0;
+  align-items:center;
+}
+.leaderboard__row .rank{
+  color:var(--gold-dim);
+  font-weight:600;
+}
+.leaderboard__row .country{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.leaderboard__row .wins{
+  color:var(--ice);
+  font-weight:600;
+  text-align:right;
+}
+
+/* ---------- ARENA ---------- */
+.arena-wrap{
+  flex:1;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:0;
+  padding:4px;
+}
+
+.arena-glow{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(closest-side, rgba(79,209,232,.06), transparent 70%);
+}
+
+#arena{
+  display:block;
+  border-radius:50%;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:1;}
+  50%{opacity:.5;}
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:560px){
+  .banner{padding:6px 10px;}
+  .banner__title{font-size:12px;}
+  .banner__round{font-size:10px;}
+  .banner__side{min-width:56px; padding:3px 6px;}
+  .banner__value{font-size:16px;}
+  .banner__winner{min-height:26px; padding:2px 10px;}
+  .banner__winner-flag{font-size:18px;}
+  .banner__winner-name{font-size:13px;}
+  .banner__status{font-size:10px; padding:3px 8px;}
+  .leaderboard{padding:3px 6px;}
+  .leaderboard__header, .leaderboard__row{font-size:10px; grid-template-columns:22px 1fr 34px;}
+  .leaderboard__row{font-size:11px;}
+}

@@ -1,0 +1,71 @@
+bayroq: 🇺🇿
+nomi: Uzbekistan
+
+bayroq: 🇷🇺
+nomi: Russia
+
+bayroq: 🇹🇷
+nomi: Turkiya
+
+bayroq: 🇺🇸
+nomi: USA
+
+bayroq: 🇬🇧
+nomi: England
+
+bayroq: 🇰🇷
+nomi: Korea
+
+bayroq: 🇯🇵
+nomi: Japan
+
+bayroq: 🇧🇷
+nomi: Brazil
+
+bayroq: 🇫🇷
+nomi: France
+
+bayroq: 🇩🇪
+nomi: Germany
+
+bayroq: 🇮🇹
+nomi: Italy
+
+bayroq: 🇪🇸
+nomi: Spain
+
+bayroq: 🇨🇳
+nomi: China
+
+bayroq: 🇮🇳
+nomi: India
+
+bayroq: 🇮🇩
+nomi: Indonesia
+
+bayroq: 🇵🇰
+nomi: Pakistan
+
+bayroq: 🇳🇬
+nomi: Nigeria
+
+bayroq: 🇪🇬
+nomi: Egypt
+
+bayroq: 🇲🇽
+nomi: Mexico
+
+bayroq: 🇨🇦
+nomi: Canada
+
+bayroq: 🇦🇺
+nomi: Australia
+
+bayroq: 🇿🇦
+nomi: South Africa
+
+bayroq: 🇦🇷
+nomi: Argentina
+
+bayroq: 🇸🇦
+nomi: Saudi Arabia

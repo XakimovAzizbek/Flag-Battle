@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flag Battle</title>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="stage">
+
+  <header class="banner">
+    <div class="banner__top">
+      <div class="banner__side banner__side--left">
+        <span class="banner__label">Qatnashchilar</span>
+        <span class="banner__value" id="aliveCount">0</span>
+      </div>
+
+      <div class="banner__center">
+        <div class="banner__title">COUNTRY FLAGS BATTLE</div>
+        <div class="banner__round" id="roundDisplay">ROUND 0</div>
+        <div class="banner__winner" id="winnerDisplay">
+          <span class="banner__winner-flag" id="winnerFlag">🏳️</span>
+          <span class="banner__winner-name" id="winnerName">Kutilmoqda…</span>
+        </div>
+      </div>
+
+      <div class="banner__side banner__side--right">
+        <span class="banner__label">Keyingi tur</span>
+        <span class="banner__value" id="nextRoundTimer">—</span>
+      </div>
+    </div>
+
+    <div class="banner__status">
+      <span id="statusText">Bayroqlar yuklanmoqda…</span>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="leaderboard" id="leaderboard">
+      <div class="leaderboard__header">
+        <span>#</span>
+        <span>Country</span>
+        <span>Wins</span>
+      </div>
+      <div id="leaderboardBody"></div>
+    </div>
+  </header>
+
+  <main class="arena-wrap">
+    <canvas id="arena"></canvas>
+    <div class="arena-glow"></div>
+  </main>
+
+</div>
+<script src="index.js"></script>
+</body>
+</html>
