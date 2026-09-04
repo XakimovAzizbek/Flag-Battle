@@ -1,26 +1,230 @@
 bayroq: 🇺🇿
 nomi: Uzbekistan
 
+bayroq: 🇰🇿
+nomi: Kazakhstan
+
+bayroq: 🇰🇬
+nomi: Kyrgyzstan
+
+bayroq: 🇹🇯
+nomi: Tajikistan
+
+bayroq: 🇹🇲
+nomi: Turkmenistan
+
+bayroq: 🇦🇫
+nomi: Afghanistan
+
 bayroq: 🇷🇺
 nomi: Russia
 
-bayroq: 🇹🇷
-nomi: Turkiya
+bayroq: 🇺🇦
+nomi: Ukraine
 
-bayroq: 🇺🇸
-nomi: USA
+bayroq: 🇧🇾
+nomi: Belarus
+
+bayroq: 🇹🇷
+nomi: Turkey
+
+bayroq: 🇮🇷
+nomi: Iran
+
+bayroq: 🇮🇶
+nomi: Iraq
+
+bayroq: 🇸🇦
+nomi: Saudi Arabia
+
+bayroq: 🇦🇪
+nomi: United Arab Emirates
+
+bayroq: 🇶🇦
+nomi: Qatar
+
+bayroq: 🇰🇼
+nomi: Kuwait
+
+bayroq: 🇧🇭
+nomi: Bahrain
+
+bayroq: 🇴🇲
+nomi: Oman
+
+bayroq: 🇾🇪
+nomi: Yemen
+
+bayroq: 🇯🇴
+nomi: Jordan
+
+bayroq: 🇱🇧
+nomi: Lebanon
+
+bayroq: 🇸🇾
+nomi: Syria
+
+bayroq: 🇮🇱
+nomi: Israel
+
+bayroq: 🇵🇸
+nomi: Palestine
+
+bayroq: 🇪🇬
+nomi: Egypt
+
+bayroq: 🇱🇾
+nomi: Libya
+
+bayroq: 🇹🇳
+nomi: Tunisia
+
+bayroq: 🇩🇿
+nomi: Algeria
+
+bayroq: 🇲🇦
+nomi: Morocco
+
+bayroq: 🇸🇩
+nomi: Sudan
+
+bayroq: 🇸🇸
+nomi: South Sudan
+
+bayroq: 🇪🇹
+nomi: Ethiopia
+
+bayroq: 🇪🇷
+nomi: Eritrea
+
+bayroq: 🇩🇯
+nomi: Djibouti
+
+bayroq: 🇸🇴
+nomi: Somalia
+
+bayroq: 🇰🇪
+nomi: Kenya
+
+bayroq: 🇺🇬
+nomi: Uganda
+
+bayroq: 🇹🇿
+nomi: Tanzania
+
+bayroq: 🇷🇼
+nomi: Rwanda
+
+bayroq: 🇧🇮
+nomi: Burundi
+
+bayroq: 🇨🇩
+nomi: DR Congo
+
+bayroq: 🇨🇬
+nomi: Congo
+
+bayroq: 🇨🇲
+nomi: Cameroon
+
+bayroq: 🇨🇫
+nomi: Central African Republic
+
+bayroq: 🇹🇩
+nomi: Chad
+
+bayroq: 🇳🇬
+nomi: Nigeria
+
+bayroq: 🇳🇪
+nomi: Niger
+
+bayroq: 🇧🇯
+nomi: Benin
+
+bayroq: 🇹🇬
+nomi: Togo
+
+bayroq: 🇬🇭
+nomi: Ghana
+
+bayroq: 🇨🇮
+nomi: Ivory Coast
+
+bayroq: 🇱🇷
+nomi: Liberia
+
+bayroq: 🇸🇱
+nomi: Sierra Leone
+
+bayroq: 🇬🇳
+nomi: Guinea
+
+bayroq: 🇬🇼
+nomi: Guinea-Bissau
+
+bayroq: 🇸🇳
+nomi: Senegal
+
+bayroq: 🇬🇲
+nomi: Gambia
+
+bayroq: 🇲🇱
+nomi: Mali
+
+bayroq: 🇧🇫
+nomi: Burkina Faso
+
+bayroq: 🇲🇷
+nomi: Mauritania
+
+bayroq: 🇨🇻
+nomi: Cape Verde
+
+bayroq: 🇿🇦
+nomi: South Africa
+
+bayroq: 🇳🇦
+nomi: Namibia
+
+bayroq: 🇧🇼
+nomi: Botswana
+
+bayroq: 🇿🇼
+nomi: Zimbabwe
+
+bayroq: 🇿🇲
+nomi: Zambia
+
+bayroq: 🇲🇼
+nomi: Malawi
+
+bayroq: 🇲🇿
+nomi: Mozambique
+
+bayroq: 🇦🇴
+nomi: Angola
+
+bayroq: 🇸🇿
+nomi: Eswatini
+
+bayroq: 🇱🇸
+nomi: Lesotho
+
+bayroq: 🇲🇬
+nomi: Madagascar
+
+bayroq: 🇲🇺
+nomi: Mauritius
+
+bayroq: 🇸🇨
+nomi: Seychelles
+
+bayroq: 🇰🇲
+nomi: Comoros
 
 bayroq: 🇬🇧
-nomi: England
-
-bayroq: 🇰🇷
-nomi: Korea
-
-bayroq: 🇯🇵
-nomi: Japan
-
-bayroq: 🇧🇷
-nomi: Brazil
+nomi: United Kingdom
 
 bayroq: 🇫🇷
 nomi: France
@@ -34,38 +238,323 @@ nomi: Italy
 bayroq: 🇪🇸
 nomi: Spain
 
-bayroq: 🇨🇳
-nomi: China
+bayroq: 🇵🇹
+nomi: Portugal
 
-bayroq: 🇮🇳
-nomi: India
+bayroq: 🇳🇱
+nomi: Netherlands
 
-bayroq: 🇮🇩
-nomi: Indonesia
+bayroq: 🇧🇪
+nomi: Belgium
 
-bayroq: 🇵🇰
-nomi: Pakistan
+bayroq: 🇨🇭
+nomi: Switzerland
 
-bayroq: 🇳🇬
-nomi: Nigeria
+bayroq: 🇦🇹
+nomi: Austria
 
-bayroq: 🇪🇬
-nomi: Egypt
+bayroq: 🇸🇪
+nomi: Sweden
 
-bayroq: 🇲🇽
-nomi: Mexico
+bayroq: 🇳🇴
+nomi: Norway
+
+bayroq: 🇩🇰
+nomi: Denmark
+
+bayroq: 🇫🇮
+nomi: Finland
+
+bayroq: 🇮🇸
+nomi: Iceland
+
+bayroq: 🇮🇪
+nomi: Ireland
+
+bayroq: 🇵🇱
+nomi: Poland
+
+bayroq: 🇨🇿
+nomi: Czechia
+
+bayroq: 🇸🇰
+nomi: Slovakia
+
+bayroq: 🇭🇺
+nomi: Hungary
+
+bayroq: 🇷🇴
+nomi: Romania
+
+bayroq: 🇧🇬
+nomi: Bulgaria
+
+bayroq: 🇬🇷
+nomi: Greece
+
+bayroq: 🇭🇷
+nomi: Croatia
+
+bayroq: 🇷🇸
+nomi: Serbia
+
+bayroq: 🇸🇮
+nomi: Slovenia
+
+bayroq: 🇧🇦
+nomi: Bosnia and Herzegovina
+
+bayroq: 🇲🇪
+nomi: Montenegro
+
+bayroq: 🇲🇰
+nomi: North Macedonia
+
+bayroq: 🇦🇱
+nomi: Albania
+
+bayroq: 🇽🇰
+nomi: Kosovo
+
+bayroq: 🇱🇹
+nomi: Lithuania
+
+bayroq: 🇱🇻
+nomi: Latvia
+
+bayroq: 🇪🇪
+nomi: Estonia
+
+bayroq: 🇲🇩
+nomi: Moldova
+
+bayroq: 🇬🇪
+nomi: Georgia
+
+bayroq: 🇦🇲
+nomi: Armenia
+
+bayroq: 🇦🇿
+nomi: Azerbaijan
+
+bayroq: 🇲🇹
+nomi: Malta
+
+bayroq: 🇨🇾
+nomi: Cyprus
+
+bayroq: 🇱🇺
+nomi: Luxembourg
+
+bayroq: 🇲🇨
+nomi: Monaco
+
+bayroq: 🇱🇮
+nomi: Liechtenstein
+
+bayroq: 🇸🇲
+nomi: San Marino
+
+bayroq: 🇦🇩
+nomi: Andorra
+
+bayroq: 🇻🇦
+nomi: Vatican City
+
+bayroq: 🇺🇸
+nomi: United States
 
 bayroq: 🇨🇦
 nomi: Canada
 
-bayroq: 🇦🇺
-nomi: Australia
+bayroq: 🇲🇽
+nomi: Mexico
 
-bayroq: 🇿🇦
-nomi: South Africa
+bayroq: 🇬🇹
+nomi: Guatemala
+
+bayroq: 🇧🇿
+nomi: Belize
+
+bayroq: 🇭🇳
+nomi: Honduras
+
+bayroq: 🇸🇻
+nomi: El Salvador
+
+bayroq: 🇳🇮
+nomi: Nicaragua
+
+bayroq: 🇨🇷
+nomi: Costa Rica
+
+bayroq: 🇵🇦
+nomi: Panama
+
+bayroq: 🇨🇺
+nomi: Cuba
+
+bayroq: 🇯🇲
+nomi: Jamaica
+
+bayroq: 🇭🇹
+nomi: Haiti
+
+bayroq: 🇩🇴
+nomi: Dominican Republic
+
+bayroq: 🇧🇸
+nomi: Bahamas
+
+bayroq: 🇹🇹
+nomi: Trinidad and Tobago
+
+bayroq: 🇧🇧
+nomi: Barbados
+
+bayroq: 🇧🇷
+nomi: Brazil
 
 bayroq: 🇦🇷
 nomi: Argentina
 
-bayroq: 🇸🇦
-nomi: Saudi Arabia
+bayroq: 🇨🇱
+nomi: Chile
+
+bayroq: 🇵🇪
+nomi: Peru
+
+bayroq: 🇨🇴
+nomi: Colombia
+
+bayroq: 🇻🇪
+nomi: Venezuela
+
+bayroq: 🇪🇨
+nomi: Ecuador
+
+bayroq: 🇧🇴
+nomi: Bolivia
+
+bayroq: 🇵🇾
+nomi: Paraguay
+
+bayroq: 🇺🇾
+nomi: Uruguay
+
+bayroq: 🇬🇾
+nomi: Guyana
+
+bayroq: 🇸🇷
+nomi: Suriname
+
+bayroq: 🇨🇳
+nomi: China
+
+bayroq: 🇯🇵
+nomi: Japan
+
+bayroq: 🇰🇷
+nomi: South Korea
+
+bayroq: 🇰🇵
+nomi: North Korea
+
+bayroq: 🇮🇳
+nomi: India
+
+bayroq: 🇵🇰
+nomi: Pakistan
+
+bayroq: 🇧🇩
+nomi: Bangladesh
+
+bayroq: 🇱🇰
+nomi: Sri Lanka
+
+bayroq: 🇳🇵
+nomi: Nepal
+
+bayroq: 🇧🇹
+nomi: Bhutan
+
+bayroq: 🇲🇻
+nomi: Maldives
+
+bayroq: 🇲🇲
+nomi: Myanmar
+
+bayroq: 🇹🇭
+nomi: Thailand
+
+bayroq: 🇱🇦
+nomi: Laos
+
+bayroq: 🇰🇭
+nomi: Cambodia
+
+bayroq: 🇻🇳
+nomi: Vietnam
+
+bayroq: 🇲🇾
+nomi: Malaysia
+
+bayroq: 🇸🇬
+nomi: Singapore
+
+bayroq: 🇮🇩
+nomi: Indonesia
+
+bayroq: 🇵🇭
+nomi: Philippines
+
+bayroq: 🇧🇳
+nomi: Brunei
+
+bayroq: 🇹🇱
+nomi: Timor-Leste
+
+bayroq: 🇲🇳
+nomi: Mongolia
+
+bayroq: 🇦🇺
+nomi: Australia
+
+bayroq: 🇳🇿
+nomi: New Zealand
+
+bayroq: 🇫🇯
+nomi: Fiji
+
+bayroq: 🇵🇬
+nomi: Papua New Guinea
+
+bayroq: 🇸🇧
+nomi: Solomon Islands
+
+bayroq: 🇻🇺
+nomi: Vanuatu
+
+bayroq: 🇼🇸
+nomi: Samoa
+
+bayroq: 🇹🇴
+nomi: Tonga
+
+bayroq: 🇰🇮
+nomi: Kiribati
+
+bayroq: 🇹🇻
+nomi: Tuvalu
+
+bayroq: 🇳🇷
+nomi: Nauru
+
+bayroq: 🇵🇼
+nomi: Palau
+
+bayroq: 🇫🇲
+nomi: Micronesia
+
+bayroq: 🇲🇭
+nomi: Marshall Islands
