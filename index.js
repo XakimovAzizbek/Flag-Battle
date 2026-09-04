@@ -381,7 +381,7 @@
 
     winnerDisplay.classList.remove("is-champion");
     winnerFlagEl.textContent = "🏳️";
-    winnerNameEl.textContent = "O'yin boshlandi…";
+    winnerNameEl.textContent = "The game has started.…";
     nextRoundTimerEl.textContent = "—";
     aliveCountEl.textContent = balls.length;
     statusText.textContent = `⚔️ Jang boshlandi — ${balls.length} ta bayroq!`;
