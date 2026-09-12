@@ -1,5 +1,5 @@
-bayroq: 🇷🇺
-nomi: Russia
+bayroq: 🇮🇱
+nomi: Israel
 
-bayroq: 🇺🇦
-nomi: Ukraine
+bayroq: 🇵🇸
+nomi: Palestine
