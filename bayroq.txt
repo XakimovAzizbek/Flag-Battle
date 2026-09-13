@@ -1,5 +1,8 @@
-bayroq: 🇮🇱
-nomi: Israel
+bayroq: 🇩🇪
+nomi: Germany
 
-bayroq: 🇵🇸
-nomi: Palestine
+bayroq: 🇫🇷
+nomi: France
+
+bayroq: 🇬🇧
+nomi: United Kingdom
