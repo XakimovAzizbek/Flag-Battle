@@ -1,5 +1,7 @@
 /* =========================================================
    BAYROQLAR JANGI — Flag Battle Royale (cheksiz)
+   Optimallashtirilgan versiya: ko'p bayroq bo'lsa ham
+   siliq (60fps) ishlaydi, qotib qolmaydi.
    ========================================================= */
 
 (function () {
@@ -11,11 +13,11 @@
   const statusText = document.getElementById("statusText");
   const aliveCountEl = document.getElementById("aliveCount");
   const nextRoundTimerEl = document.getElementById("nextRoundTimer");
-  const winnerDisplay = document.getElementById("winnerDisplay");
+  const winnerCircleEl = document.getElementById("winnerCircle");
   const winnerFlagEl = document.getElementById("winnerFlag");
   const winnerNameEl = document.getElementById("winnerName");
   const roundDisplay = document.getElementById("roundDisplay");
-  const leaderboardBody = document.getElementById("leaderboardBody");
+  const roundHistoryEl = document.getElementById("roundHistory");
 
   // ---------- CONFIG ----------
   const CONFIG = {
@@ -28,24 +30,29 @@
     speedMax: 2.5,
     speedHardCap: 4.2,
     respawnDelay: 5000,          // 5 soniya kutish
-    maxFlags: 180
-    // maxRounds olib tashlandi → cheksiz
+    maxFlags: 180,
+    speechLang: "en-US",         // g'olib nomi shu tilda ovoz bilan aytiladi
+    maxHistoryChips: 60          // banner'dagi raundlar tarixida ko'rinadigan eng ko'p yozuv
   };
 
   let ARENA_RADIUS = 0;
   let CENTER = { x: 0, y: 0 };
   let gapAngle = -Math.PI / 2;
+  let dpr = window.devicePixelRatio || 1;
 
   let flagsPool = [];
-  let balls = [];
+  let balls = [];       // barcha sharlar (o'lik + tirik) — statistika/leaderboard uchun
+  let aliveList = [];   // faqat tirik sharlar — simulyatsiya/chizish shu massivda ishlaydi
   let eliminatedOrder = [];
   let roundActive = false;
   let countdownHandle = null;
   let animHandle = null;
 
-  // Round & leaderboard
+  // Round & g'oliblar tarixi
   let roundCount = 0;
-  let winners = [];
+  let winners = [];            // har raund g'olibi: { round, emoji, nomi }
+  let hideAliveBalls = false;  // g'olib ko'rsatilayotganda arenadagi qolgan shar chizilmaydi
+  let winnerCircleSize = 180;
 
   // ---------- SOUND (Web Audio) ----------
   let audioCtx = null;
@@ -76,20 +83,17 @@
     initAudio();
     switch (type) {
       case 'start':
-        playTone(523, 0.15, 'square', 0.2);
-        setTimeout(() => playTone(659, 0.15, 'square', 0.2), 150);
+        playTone(523, 0.15, 'square', 0.22);
+        setTimeout(() => playTone(659, 0.15, 'square', 0.22), 150);
         break;
       case 'win':
-        playTone(880, 0.1, 'sine', 0.25);
-        setTimeout(() => playTone(1100, 0.1, 'sine', 0.25), 120);
-        setTimeout(() => playTone(1320, 0.2, 'sine', 0.3), 240);
+        playTone(880, 0.1, 'sine', 0.28);
+        setTimeout(() => playTone(1100, 0.1, 'sine', 0.28), 120);
+        setTimeout(() => playTone(1320, 0.2, 'sine', 0.32), 240);
         break;
       case 'lose':
-        playTone(300, 0.3, 'sawtooth', 0.15);
-        setTimeout(() => playTone(200, 0.4, 'sawtooth', 0.15), 250);
-        break;
-      case 'collision':
-        playTone(600, 0.05, 'square', 0.1);
+        playTone(300, 0.3, 'sawtooth', 0.16);
+        setTimeout(() => playTone(200, 0.4, 'sawtooth', 0.16), 250);
         break;
       case 'next_round':
         playTone(440, 0.1, 'sine', 0.15);
@@ -99,6 +103,44 @@
       default: break;
     }
   }
+
+  // ---------- OVOZLI HABAR (g'olib nomi) ----------
+  function speakWinner(name) {
+    try {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(name + " wins!");
+      u.lang = CONFIG.speechLang;
+      u.rate = 0.95;
+      u.pitch = 1;
+      u.volume = 1;
+      window.speechSynthesis.speak(u);
+    } catch (_) {}
+  }
+
+  function stopSpeech() {
+    try {
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    } catch (_) {}
+  }
+
+  // Telefonlarda ovozli habar birinchi tegishdan keyingina ishlaydi —
+  // shuning uchun birinchi tegishda bo'sh gap bilan "uyg'otib" qo'yamiz.
+  function primeSpeechOnce() {
+    try {
+      if ("speechSynthesis" in window) {
+        const u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        window.speechSynthesis.speak(u);
+      }
+    } catch (_) {}
+    window.removeEventListener("pointerdown", primeSpeechOnce);
+    window.removeEventListener("touchstart", primeSpeechOnce);
+    window.removeEventListener("click", primeSpeechOnce);
+  }
+  window.addEventListener("pointerdown", primeSpeechOnce);
+  window.addEventListener("touchstart", primeSpeechOnce);
+  window.addEventListener("click", primeSpeechOnce);
 
   // ---------- UTIL ----------
   function rand(min, max) { return Math.random() * (max - min) + min; }
@@ -111,7 +153,7 @@
   // ---------- LOAD bayroq.txt ----------
   async function loadFlags() {
     try {
-      const res = await fetch("bayroq.txt", { cache: "no-store" });
+      const res = await fetch("https://xakimovazizbek.github.io/Flag-Battle/bayroq.txt", { cache: "no-store" });
       if (!res.ok) throw new Error("bayroq.txt topilmadi");
       const raw = await res.text();
       return parseFlags(raw);
@@ -161,7 +203,7 @@
   function resizeCanvas() {
     const wrap = canvas.parentElement;
     const size = Math.min(wrap.clientWidth, wrap.clientHeight) * 0.97;
-    const dpr = window.devicePixelRatio || 1;
+    dpr = window.devicePixelRatio || 1;
 
     canvas.style.width = size + "px";
     canvas.style.height = size + "px";
@@ -171,6 +213,13 @@
 
     ARENA_RADIUS = size / 2 - CONFIG.ringThickness - CONFIG.ballRadius - 2;
     CENTER = { x: size / 2, y: size / 2 };
+
+    winnerCircleSize = size * 0.5;
+    winnerCircleEl.style.setProperty("--wc-size", winnerCircleSize + "px");
+    fitWinnerText();
+
+    syncEliminatedCanvas(size);
+    redrawEliminatedOffscreen(); // o'lcham o'zgarsa, keshni qayta chizish
   }
 
   // ---------- BALL FACTORY ----------
@@ -200,8 +249,9 @@
   function step() {
     gapAngle += CONFIG.ringRotationSpeed;
 
-    for (const b of balls) {
-      if (!b.alive) continue;
+    const n = aliveList.length;
+    for (let i = 0; i < n; i++) {
+      const b = aliveList[i];
       b.x += b.vx;
       b.y += b.vy;
       if (b.hitFlash > 0) b.hitFlash -= 1;
@@ -213,8 +263,9 @@
   }
 
   function enforceSpeedLimits() {
-    for (const b of balls) {
-      if (!b.alive) continue;
+    const n = aliveList.length;
+    for (let i = 0; i < n; i++) {
+      const b = aliveList[i];
       const speed = Math.hypot(b.vx, b.vy) || 0.0001;
       if (speed < CONFIG.speedMin) {
         const scale = CONFIG.speedMin / speed;
@@ -228,37 +279,84 @@
     }
   }
 
-  function resolveBallCollisions() {
-    const alive = balls.filter(b => b.alive);
-    for (let i = 0; i < alive.length; i++) {
-      for (let j = i + 1; j < alive.length; j++) {
-        const a = alive[i], b = alive[j];
-        const dx = b.x - a.x, dy = b.y - a.y;
-        const dist = Math.hypot(dx, dy) || 0.0001;
-        const minDist = a.r + b.r;
-        if (dist < minDist) {
-          const overlap = (minDist - dist) / 2;
-          const nx = dx / dist, ny = dy / dist;
-          a.x -= nx * overlap;
-          a.y -= ny * overlap;
-          b.x += nx * overlap;
-          b.y += ny * overlap;
+  // ---------- COLLISION (spatial grid — O(n) ga yaqin, ko'p bayroqda ham siliq) ----------
+  // Arenani kataklarga (grid) bo'lib, faqat yaqin kataklardagi sharlarni
+  // bir-biri bilan solishtiramiz. Bayroqlar soni ko'paysa ham tezlik
+  // deyarli chiziqli o'sadi — "qotib qolish" shu orqali yo'qoladi.
+  const gridMap = new Map();
+  const neighborOffsets = [[0, 0], [1, 0], [0, 1], [1, 1], [1, -1]];
 
-          const relVx = b.vx - a.vx;
-          const relVy = b.vy - a.vy;
-          const velAlongNormal = relVx * nx + relVy * ny;
-          if (velAlongNormal < 0) {
-            const impulse = -(1 + CONFIG.restitution) * velAlongNormal / 2;
-            a.vx -= impulse * nx;
-            a.vy -= impulse * ny;
-            b.vx += impulse * nx;
-            b.vy += impulse * ny;
-            a.hitFlash = 8;
-            b.hitFlash = 8;
-            playSound('collision');
+  function resolveBallCollisions() {
+    gridMap.clear();
+    const cellSize = CONFIG.ballRadius * 2.5;
+
+    for (let i = 0; i < aliveList.length; i++) {
+      const b = aliveList[i];
+      const cx = Math.floor(b.x / cellSize);
+      const cy = Math.floor(b.y / cellSize);
+      const key = cx + "," + cy;
+      let arr = gridMap.get(key);
+      if (!arr) {
+        arr = [];
+        gridMap.set(key, arr);
+      }
+      arr.push(b);
+    }
+
+    for (const [key, cellBalls] of gridMap) {
+      const commaIdx = key.indexOf(",");
+      const cx = parseInt(key.slice(0, commaIdx), 10);
+      const cy = parseInt(key.slice(commaIdx + 1), 10);
+
+      for (let k = 0; k < neighborOffsets.length; k++) {
+        const ox = neighborOffsets[k][0];
+        const oy = neighborOffsets[k][1];
+        const nKey = (cx + ox) + "," + (cy + oy);
+        const neighborBalls = gridMap.get(nKey);
+        if (!neighborBalls) continue;
+
+        if (ox === 0 && oy === 0) {
+          for (let i = 0; i < cellBalls.length; i++) {
+            for (let j = i + 1; j < cellBalls.length; j++) {
+              resolvePair(cellBalls[i], cellBalls[j]);
+            }
+          }
+        } else {
+          for (let i = 0; i < cellBalls.length; i++) {
+            for (let j = 0; j < neighborBalls.length; j++) {
+              resolvePair(cellBalls[i], neighborBalls[j]);
+            }
           }
         }
       }
+    }
+  }
+
+  function resolvePair(a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const minDist = a.r + b.r;
+    const distSq = dx * dx + dy * dy;
+    if (distSq >= minDist * minDist || distSq === 0) return;
+
+    const dist = Math.sqrt(distSq);
+    const overlap = (minDist - dist) / 2;
+    const nx = dx / dist, ny = dy / dist;
+    a.x -= nx * overlap;
+    a.y -= ny * overlap;
+    b.x += nx * overlap;
+    b.y += ny * overlap;
+
+    const relVx = b.vx - a.vx;
+    const relVy = b.vy - a.vy;
+    const velAlongNormal = relVx * nx + relVy * ny;
+    if (velAlongNormal < 0) {
+      const impulse = -(1 + CONFIG.restitution) * velAlongNormal / 2;
+      a.vx -= impulse * nx;
+      a.vy -= impulse * ny;
+      b.vx += impulse * nx;
+      b.vy += impulse * ny;
+      a.hitFlash = 8;
+      b.hitFlash = 8;
     }
   }
 
@@ -269,8 +367,13 @@
   }
 
   function resolveWallOrGap() {
-    for (const b of balls) {
-      if (!b.alive) continue;
+    const gapCenter = angleNormalized(gapAngle);
+    const half = CONFIG.gapAngleWidth / 2;
+
+    // orqadan oldinga o'tamiz — eliminateBall ichida aliveList dan
+    // swap-pop qilinganda indekslar siljib ketmasligi uchun
+    for (let i = aliveList.length - 1; i >= 0; i--) {
+      const b = aliveList[i];
       const dx = b.x - CENTER.x;
       const dy = b.y - CENTER.y;
       const dist = Math.hypot(dx, dy);
@@ -278,14 +381,13 @@
 
       if (dist + b.r >= limit) {
         const ballAngle = angleNormalized(Math.atan2(dy, dx));
-        const gapCenter = angleNormalized(gapAngle);
         let diff = Math.abs(ballAngle - gapCenter);
         if (diff > Math.PI) diff = Math.PI * 2 - diff;
 
-        const inGap = diff < CONFIG.gapAngleWidth / 2;
+        const inGap = diff < half;
 
         if (inGap && dist > limit * 0.4) {
-          eliminateBall(b);
+          eliminateBall(b, i);
           continue;
         }
 
@@ -306,22 +408,30 @@
     }
   }
 
-  function eliminateBall(b) {
+  function eliminateBall(b, indexInAliveList) {
     b.alive = false;
     b.eliminatedAt = performance.now();
     eliminatedOrder.push(b);
+
+    // aliveList dan tez o'chirish (swap-pop — tartib muhim emas)
+    const lastIdx = aliveList.length - 1;
+    if (indexInAliveList !== lastIdx) {
+      aliveList[indexInAliveList] = aliveList[lastIdx];
+    }
+    aliveList.pop();
+
+    appendEliminatedToOffscreen(b);
     playSound('lose');
     checkRoundEnd();
   }
 
   // ---------- ROUND CONTROL ----------
   function checkRoundEnd() {
-    const aliveBalls = balls.filter(b => b.alive);
-    aliveCountEl.textContent = aliveBalls.length;
+    aliveCountEl.textContent = aliveList.length;
 
-    if (aliveBalls.length === 1 && roundActive) {
-      finishRound(aliveBalls[0]);
-    } else if (aliveBalls.length === 0 && roundActive) {
+    if (aliveList.length === 1 && roundActive) {
+      finishRound(aliveList[0]);
+    } else if (aliveList.length === 0 && roundActive) {
       finishRound(null);
     }
   }
@@ -331,14 +441,13 @@
     statusText.classList.remove("pulse");
 
     if (winner) {
-      winnerFlagEl.textContent = winner.emoji;
-      winnerNameEl.textContent = winner.nomi;
-      winnerDisplay.classList.add("is-champion");
+      showWinnerCircle(winner);
       statusText.textContent = `${winner.nomi} g'olib chiqdi! 🏆`;
       playSound('win');
-      // save winner
-      winners.push({ emoji: winner.emoji, nomi: winner.nomi });
-      updateLeaderboard();
+      speakWinner(winner.nomi);
+      const rec = { round: roundCount, emoji: winner.emoji, nomi: winner.nomi };
+      winners.push(rec);
+      addRoundChip(rec);
     } else {
       statusText.textContent = "Tur yakunlandi.";
     }
@@ -349,17 +458,17 @@
   function startCountdownToNextRound() {
     let remaining = CONFIG.respawnDelay;
     updateTimerLabel(remaining);
-    statusText.textContent = `⏳ Yangi raund boshlanmoqda… ${(remaining/1000).toFixed(1)}s`;
+    statusText.textContent = `⏳ Yangi raund boshlanmoqda… ${(remaining / 1000).toFixed(1)}s`;
     playSound('next_round');
 
     clearInterval(countdownHandle);
     countdownHandle = setInterval(() => {
       remaining -= 100;
       updateTimerLabel(remaining);
-      statusText.textContent = `⏳ Yangi raund boshlanmoqda… ${(remaining/1000).toFixed(1)}s`;
+      statusText.textContent = `⏳ Yangi raund boshlanmoqda… ${(remaining / 1000).toFixed(1)}s`;
       if (remaining <= 0) {
         clearInterval(countdownHandle);
-        beginRound(); // cheksiz davom etadi
+        beginRound();
       }
     }, 100);
   }
@@ -376,55 +485,132 @@
 
     eliminatedOrder = [];
     balls = makeBalls(flagsPool);
+    aliveList = balls.slice(); // boshida hammasi tirik
     roundActive = true;
     gapAngle = -Math.PI / 2;
 
-    winnerDisplay.classList.remove("is-champion");
-    winnerFlagEl.textContent = "🏳️";
-    winnerNameEl.textContent = "The game has started.…";
+    clearEliminatedOffscreen();
+
+    hideWinnerCircle();
+    stopSpeech();
     nextRoundTimerEl.textContent = "—";
     aliveCountEl.textContent = balls.length;
-    statusText.textContent = `⚔️ Jang boshlandi — ${balls.length} ta bayroq!`;
+    statusText.textContent = `⚔️ The battle has begun — ${balls.length} flags!`;
     statusText.classList.add("pulse");
     playSound('start');
   }
 
-  // ---------- LEADERBOARD ----------
-  function updateLeaderboard() {
-    const counts = {};
-    for (const w of winners) {
-      const key = w.emoji + '|' + w.nomi;
-      counts[key] = (counts[key] || 0) + 1;
-    }
-    const entries = Object.entries(counts).map(([key, count]) => {
-      const [emoji, nomi] = key.split('|');
-      return { emoji, nomi, wins: count };
-    });
-    entries.sort((a, b) => b.wins - a.wins || a.nomi.localeCompare(b.nomi));
-    const top = entries.slice(0, 5);
+  // ---------- G'OLIB MARKAZDA + RAUNDLAR TARIXI ----------
+  function fitWinnerText() {
+    const len = (winnerNameEl.textContent || "").length;
+    const k = len <= 10 ? 0.13 : len <= 16 ? 0.105 : len <= 20 ? 0.088 : 0.075;
+    winnerNameEl.style.fontSize = (winnerCircleSize * k) + "px";
+  }
 
-    let html = '';
-    for (let i = 0; i < 5; i++) {
-      const row = top[i];
-      if (row) {
-        html += `
-          <div class="leaderboard__row">
-            <span class="rank">#${i+1}</span>
-            <span class="country">${row.emoji} ${row.nomi}</span>
-            <span class="wins">${row.wins} win${row.wins>1?'s':''}</span>
-          </div>
-        `;
-      } else {
-        html += `
-          <div class="leaderboard__row" style="color:var(--text-lo); opacity:0.5;">
-            <span class="rank">#${i+1}</span>
-            <span class="country">—</span>
-            <span class="wins">0 wins</span>
-          </div>
-        `;
-      }
+  function showWinnerCircle(w) {
+    winnerFlagEl.textContent = w.emoji;
+    winnerNameEl.textContent = w.nomi;
+    fitWinnerText();
+    hideAliveBalls = true;
+    winnerCircleEl.classList.remove("show");
+    void winnerCircleEl.offsetWidth; // animatsiya qayta ishlashi uchun
+    winnerCircleEl.classList.add("show");
+  }
+
+  function hideWinnerCircle() {
+    winnerCircleEl.classList.remove("show");
+    hideAliveBalls = false;
+  }
+
+  function addRoundChip(rec) {
+    const empty = roundHistoryEl.querySelector(".rounds__empty");
+    if (empty) roundHistoryEl.removeChild(empty);
+
+    const prev = roundHistoryEl.querySelector(".round-chip.is-new");
+    if (prev) prev.classList.remove("is-new");
+
+    const chip = document.createElement("span");
+    chip.className = "round-chip is-new";
+
+    const r = document.createElement("b");
+    r.textContent = "R" + rec.round;
+    const f = document.createElement("span");
+    f.className = "round-chip__flag";
+    f.textContent = rec.emoji;
+    const n = document.createElement("span");
+    n.className = "round-chip__name";
+    n.textContent = rec.nomi;
+
+    chip.append(r, f, n);
+    roundHistoryEl.appendChild(chip);
+
+    while (roundHistoryEl.children.length > CONFIG.maxHistoryChips) {
+      roundHistoryEl.removeChild(roundHistoryEl.firstChild);
     }
-    leaderboardBody.innerHTML = html;
+    roundHistoryEl.scrollLeft = roundHistoryEl.scrollWidth;
+  }
+
+  // ---------- ELIMINATED FLAGS — OFFSCREEN CACHE ----------
+  // Muammo: avval har frame barcha yutqazgan bayroqlar matn sifatida
+  // qayta chizilardi (ctx.fillText juda qimmat amal). Ko'p bayroqda bu
+  // asosiy sabablardan biri bo'lib, o'yinni "qotirardi". Endi har bir
+  // elimatsiyada FAQAT bitta yangi bayroq alohida offscreen canvas'ga
+  // bir marta chiziladi va keyin har frame oddiy drawImage orqali
+  // ko'chiriladi — bu amal juda arzon va 60fps'ni hech qachon
+  // pasaytirmaydi.
+  let eliminatedCanvas = document.createElement("canvas");
+  let eliminatedCtx = eliminatedCanvas.getContext("2d");
+  let eliminatedLayoutCache = { spacing: 40, maxPerRow: 1 };
+
+  function syncEliminatedCanvas(size) {
+    eliminatedCanvas.width = size * dpr;
+    eliminatedCanvas.height = size * dpr;
+    eliminatedCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const spacing = 40;
+    const maxPerRow = Math.max(1, Math.floor((ARENA_RADIUS * 2) / spacing) - 1);
+    eliminatedLayoutCache = { spacing, maxPerRow };
+  }
+
+  function clearEliminatedOffscreen() {
+    eliminatedCtx.save();
+    eliminatedCtx.setTransform(1, 0, 0, 1, 0, 0);
+    eliminatedCtx.clearRect(0, 0, eliminatedCanvas.width, eliminatedCanvas.height);
+    eliminatedCtx.restore();
+  }
+
+  function appendEliminatedToOffscreen(b) {
+    const { spacing, maxPerRow } = eliminatedLayoutCache;
+    const idx = eliminatedOrder.length - 1;
+    const col = idx % maxPerRow;
+    const row = Math.floor(idx / maxPerRow);
+
+    const startY = CENTER.y + ARENA_RADIUS + 30;
+    const totalWidth = Math.min(eliminatedOrder.length, maxPerRow) * spacing;
+    const startX = CENTER.x - totalWidth / 2;
+
+    const x = startX + col * spacing + spacing / 2;
+    const y = startY + row * spacing;
+
+    eliminatedCtx.save();
+    eliminatedCtx.font = `32px serif`;
+    eliminatedCtx.textAlign = "center";
+    eliminatedCtx.textBaseline = "middle";
+    eliminatedCtx.shadowColor = "rgba(255,255,255,0.2)";
+    eliminatedCtx.shadowBlur = 10;
+    eliminatedCtx.fillText(b.emoji, x, y);
+    eliminatedCtx.restore();
+  }
+
+  function redrawEliminatedOffscreen() {
+    clearEliminatedOffscreen();
+    if (!eliminatedOrder.length) return;
+    const saved = eliminatedOrder.slice();
+    eliminatedOrder = [];
+    for (const b of saved) {
+      eliminatedOrder.push(b);
+      appendEliminatedToOffscreen(b);
+    }
   }
 
   // ---------- DRAW ----------
@@ -432,10 +618,17 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawRing();
-    for (const b of balls) {
-      if (b.alive) drawBall(b);
+
+    // eliminatsiya qilingan bayroqlar — keshdan tez ko'chirish (arzon amal)
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(eliminatedCanvas, 0, 0);
+    ctx.restore();
+
+    const n = hideAliveBalls ? 0 : aliveList.length;
+    for (let i = 0; i < n; i++) {
+      drawBall(aliveList[i]);
     }
-    drawEliminated();
   }
 
   function drawRing() {
@@ -472,55 +665,28 @@
     ctx.stroke();
   }
 
+  // Shar chizish: avvalgi versiyada har bir urilgan sharda ctx.shadowBlur
+  // ishlatilgan edi — canvas'da shadow effekt juda qimmat amal, va
+  // bir vaqtda 50-100+ shar "yongan" holatda bo'lsa, frame vaqti keskin
+  // oshib, o'yin qotib qolardi. Endi shadow o'rniga arzon alternativ:
+  // yorqinroq qalin chiziq (stroke) — vizual effekt deyarli bir xil,
+  // lekin amal o'nlab marta arzonroq va 300+ bayroqda ham siliq ishlaydi.
   function drawBall(b) {
-    ctx.save();
-    ctx.translate(b.x, b.y);
-    if (b.hitFlash > 0) {
-      ctx.shadowColor = getCss("--ice");
-      ctx.shadowBlur = 18;
-    }
+    const hit = b.hitFlash > 0;
+
     ctx.beginPath();
-    ctx.arc(0, 0, b.r, 0, Math.PI * 2);
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
     ctx.fillStyle = "#182036";
     ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#2c3757";
+
+    ctx.lineWidth = hit ? 3 : 2;
+    ctx.strokeStyle = hit ? "#9fe8f7" : "#2c3757";
     ctx.stroke();
 
-    ctx.shadowBlur = 0;
     ctx.font = `${b.r * 1.6}px serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(b.emoji, 0, 1);
-    ctx.restore();
-  }
-
-  // KATTA VA YORQIN ELIMINATED BAYROQLAR
-  function drawEliminated() {
-    const eliminated = eliminatedOrder.filter(b => !b.alive);
-    if (eliminated.length === 0) return;
-
-    const startY = CENTER.y + ARENA_RADIUS + 30;
-    const spacing = 40;          // kengroq
-    const maxPerRow = Math.floor((ARENA_RADIUS * 2) / spacing) - 1;
-    const rows = Math.ceil(eliminated.length / maxPerRow);
-    const totalWidth = Math.min(eliminated.length, maxPerRow) * spacing;
-    const startX = CENTER.x - totalWidth / 2;
-
-    ctx.save();
-    ctx.font = `32px serif`;      // kattaroq
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.shadowColor = "rgba(255,255,255,0.2)";
-    ctx.shadowBlur = 10;
-    for (let i = 0; i < eliminated.length; i++) {
-      const col = i % maxPerRow;
-      const row = Math.floor(i / maxPerRow);
-      const x = startX + col * spacing + spacing/2;
-      const y = startY + row * spacing;
-      ctx.fillText(eliminated[i].emoji, x, y);
-    }
-    ctx.restore();
+    ctx.fillText(b.emoji, b.x, b.y + 1);
   }
 
   function getCss(varName) {
@@ -544,11 +710,10 @@
 
     roundCount = 0;
     winners = [];
-    updateLeaderboard();
     roundDisplay.textContent = `ROUND 0`;
 
     beginRound();
-    loop();
+    requestAnimationFrame(loop);
   }
 
   init();

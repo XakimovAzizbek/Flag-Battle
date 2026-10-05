@@ -119,38 +119,6 @@ html,body{
   letter-spacing:.04em;
 }
 
-.banner__winner{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:4px 16px;
-  border-radius:999px;
-  background:radial-gradient(120% 120% at 50% 0%, #1c2438 0%, #10162655 100%);
-  border:1px solid var(--panel-line);
-  min-height:32px;
-  transition:border-color .3s ease, box-shadow .3s ease;
-}
-
-.banner__winner.is-champion{
-  border-color:var(--gold);
-  box-shadow:0 0 0 1px var(--gold-dim), 0 0 24px rgba(244,197,66,.35);
-}
-
-.banner__winner-flag{
-  font-size:24px;
-  line-height:1;
-}
-
-.banner__winner-name{
-  font-size:16px;
-  font-weight:700;
-  color:var(--text-hi);
-}
-
-.banner__winner.is-champion .banner__winner-name{
-  color:var(--gold);
-}
-
 .banner__status{
   text-align:center;
   font-size:12px;
@@ -166,48 +134,54 @@ html,body{
   animation:pulse 1s ease-in-out infinite;
 }
 
-/* LEADERBOARD */
-.leaderboard{
-  margin-top:4px;
-  padding:4px 10px;
+/* ---------- ROUNDS HISTORY ---------- */
+.rounds{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:4px 6px;
   background:rgba(0,0,0,0.35);
   border-radius:8px;
   border:1px solid var(--panel-line);
-  display:flex;
-  flex-direction:column;
-  gap:2px;
+  scrollbar-width:none;
+  min-height:32px;
 }
-.leaderboard__header{
-  display:grid;
-  grid-template-columns:28px 1fr 44px;
-  font-size:10px;
+.rounds::-webkit-scrollbar{display:none;}
+
+.rounds__empty{
+  font-size:11px;
   color:var(--text-lo);
-  text-transform:uppercase;
-  letter-spacing:0.05em;
-  padding-bottom:3px;
-  border-bottom:1px solid var(--panel-line);
+  opacity:.6;
+  margin:0 auto;
+  white-space:nowrap;
 }
-.leaderboard__row{
-  display:grid;
-  grid-template-columns:28px 1fr 44px;
-  font-size:13px;
-  padding:2px 0;
-  align-items:center;
-}
-.leaderboard__row .rank{
-  color:var(--gold-dim);
-  font-weight:600;
-}
-.leaderboard__row .country{
+
+.round-chip{
+  flex:0 0 auto;
   display:flex;
   align-items:center;
   gap:5px;
+  padding:3px 10px;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+  border:1px solid var(--panel-line);
+  font-size:12px;
+  color:var(--text-hi);
+  white-space:nowrap;
 }
-.leaderboard__row .wins{
-  color:var(--ice);
-  font-weight:600;
-  text-align:right;
+.round-chip b{
+  color:var(--gold-dim);
+  font-weight:700;
+  font-size:11px;
 }
+.round-chip__flag{font-size:16px; line-height:1;}
+.round-chip.is-new{
+  border-color:var(--gold);
+  box-shadow:0 0 10px rgba(244,197,66,.3);
+}
+.round-chip.is-new b{color:var(--gold);}
 
 /* ---------- ARENA ---------- */
 .arena-wrap{
@@ -232,6 +206,49 @@ html,body{
   border-radius:50%;
 }
 
+/* ---------- WINNER (doira markazida) ---------- */
+.winner-circle{
+  --wc-size:180px;
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:var(--wc-size);
+  height:var(--wc-size);
+  transform:translate(-50%,-50%) scale(.4);
+  border-radius:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:calc(var(--wc-size) * 0.03);
+  padding:calc(var(--wc-size) * 0.1);
+  text-align:center;
+  background:radial-gradient(circle at 50% 30%, #243055 0%, #121a30 75%);
+  border:3px solid var(--gold);
+  box-shadow:
+    0 0 0 6px rgba(244,197,66,.15),
+    0 0 40px rgba(244,197,66,.45),
+    inset 0 0 30px rgba(244,197,66,.12);
+  opacity:0;
+  pointer-events:none;
+  z-index:3;
+  transition:opacity .35s ease, transform .55s cubic-bezier(.2,1.4,.4,1);
+}
+.winner-circle.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+.winner-circle__flag{
+  font-size:calc(var(--wc-size) * 0.36);
+  line-height:1;
+}
+.winner-circle__name{
+  font-weight:800;
+  color:var(--gold);
+  line-height:1.1;
+  word-break:break-word;
+}
+
 @keyframes pulse{
   0%,100%{opacity:1;}
   50%{opacity:.5;}
@@ -244,11 +261,7 @@ html,body{
   .banner__round{font-size:10px;}
   .banner__side{min-width:56px; padding:3px 6px;}
   .banner__value{font-size:16px;}
-  .banner__winner{min-height:26px; padding:2px 10px;}
-  .banner__winner-flag{font-size:18px;}
-  .banner__winner-name{font-size:13px;}
   .banner__status{font-size:10px; padding:3px 8px;}
-  .leaderboard{padding:3px 6px;}
-  .leaderboard__header, .leaderboard__row{font-size:10px; grid-template-columns:22px 1fr 34px;}
-  .leaderboard__row{font-size:11px;}
+  .rounds{min-height:28px; padding:3px 4px;}
+  .round-chip{font-size:11px; padding:2px 8px;}
 }
